@@ -76,7 +76,7 @@ if __name__=='__main__':
 	xArr = np.array(xArr)
 	yArr = np.array(yArr)
 
-	#以30%的数据构造测试样本,其余构造训练样本
+	#以25%的数据构造测试样本,其余构造训练样本
 	x_train,x_test,y_train,y_test = train_test_split(xArr, yArr, test_size=0.25)
 
 	# imgShow()
