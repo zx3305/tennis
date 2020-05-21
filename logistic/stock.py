@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
+from sklearn.preprocessing import StandardScaler
 
 import tushare
 import os
@@ -15,7 +16,7 @@ os.environ['TZ'] = 'Asia/Shanghai'
 
 
 def initData():
-	pro = tushare.pro_api("1bbf2b41a2180bc45022199c6ffdab5b85b07729562d189b22724b93")
+	pro = tushare.pro_api("")
 	df = pro.daily(ts_code='000001.SZ', start_date='20190101', end_date='20200401', fields='trade_date,open,high,low,close,vol')
 	df.to_csv('./stock_train.csv')
 
@@ -62,37 +63,40 @@ def sigmoid(z):
 	return 1/(1+np.exp(-z))
 
 def predict(theta, X):
-	prod = sigmoid(X*theta.T)      #把线性回归模型带入到sigmoid，获取回归概率
+	prod = sigmoid(np.dot(X,theta))      #把线性回归模型带入到sigmoid，获取回归概率
 	return [1 if a>= 0.5 else 0 for a in prod] #设定阈值为0.5
 
 def gradientDescent(X, y, theta, alpha, m, numIter):
-	XTrans = X.T     #获取转置矩阵
+	theta_r,theta_l = theta.shape
 	for i in range(0, numIter):    #梯度下降步数
-		theta = np.matrix(theta)   #矩阵转换
-		loss = np.array(predict(theta, X)) - y  #hθ(x) - y 的矩阵
-		gradient = np.dot(XTrans,loss)    #因为XTrans是转置矩阵，所以结果相当求和了
-		theta = theta - (alpha/m)*gradient    #求解θ
+		loss = sigmoid(np.dot(X,theta)) - y  #hθ(x) - y 的矩阵
+		for j in range(theta_r):
+			gradient = np.multiply(loss, X[:,j])
+			theta[j,0] = theta[j,0] - (alpha/m)*np.sum(gradient)    #求解θ
+		# theta = theta - (alpha/m) * np.sum(np.dot(X.T , loss))
 	return theta
 
 #循环梯度下降
 def selfGradient():
 	df = getData()
 	df.insert(0, 'x0', np.ones(len(df)))
-	x_train,x_test,y_train,y_test = train_test_split(df[['x0','open','high', 'low', 'vol', 'close']], df['y'], test_size=0.25)
-	theta = np.ones(6)		#初始化theta
+	feature = df[['x0','open','high', 'low', 'vol', 'close']]
+	x_train,x_test,y_train,y_test = train_test_split(feature, df['y'], test_size=0.25)
+
+	theta = np.ones((6,1))		#初始化theta
 	alpha = 0.0001
 	m = len(x_train)
 	numIter = 1000
 	theta = gradientDescent(x_train.values, y_train.values, theta, alpha, m, numIter)
 	print(theta)
-	y_hat = predict(theta, x_test.values)
-	data = pd.DataFrame(columns=['real', 'predict'], index=np.arange(0,len(y_test)))
-	data['real'] = y_test.values
-	data['predict'] = y_hat
-	print(data.head())
+	# y_hat = predict(theta, x_test.values)
+	# data = pd.DataFrame(columns=['real', 'predict'], index=np.arange(0,len(y_test)))
+	# data['real'] = y_test
+	# data['predict'] = y_hat
+	# print(data.head())
 
 if __name__ == '__main__':
-	reg()
+	selfGradient()
 
 
 

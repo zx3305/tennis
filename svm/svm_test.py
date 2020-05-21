@@ -5,8 +5,6 @@ from sklearn import model_selection #模型比较和选择包
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
-
-
 def lineSvm():
 	#设置相同的seed，则每次生成的随机数都相同
 	np.random.seed(0)

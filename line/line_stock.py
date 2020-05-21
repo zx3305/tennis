@@ -56,7 +56,7 @@ def gradientDescent():
 	for i in range(nums):
 		#随机梯度下降法
 		index = np.random.randint(0, len(x_train))
-		X = x_train.sample(n=index).values
+		X = x_train.sample(n=index, replace=True).values
 		Y = y_train.sample(n=index).values
 
 		error = np.dot(X,theta.T) - Y 		#对应函数hθ(x) - y
@@ -64,6 +64,9 @@ def gradientDescent():
 			#对应公式 θ(j) = θ(j)*(1-λ*α/m) - α/m*∑(hθ(x) - y)*x(j), 这里引入了正则化系数
 			t = np.multiply(error, X[:, j]) #数惩
 			temp[0, j] = theta[0, j]*(1-r*(rate/m)) - (rate/m)*np.sum(t)
+
+		# theta = theta - (rate/m)*X.T*error
+
 		theta = temp
 
 	print(theta)
