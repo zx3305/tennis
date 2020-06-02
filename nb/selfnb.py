@@ -68,7 +68,7 @@ def trainN(X_train,y_train):
     return p0,p1,pA
 
 
-def classify(testMat,p0,p1):
+def classify(testMat,p0,p1,pA):
     """
     进行分类
     :param testMat: 
@@ -77,8 +77,8 @@ def classify(testMat,p0,p1):
     :param pA: 
     :return: 
     """
-    p0Score = sum(testMat * p0)
-    p1Score = sum(testMat * p1)
+    p0Score = sum(testMat * p0) +pA
+    p1Score = sum(testMat * p1) +(1-pA)     #在计算概率时已经取了对数，直接求和比较比较大小
     if p0Score > p1Score:
         return 0
     else:
@@ -96,8 +96,8 @@ if __name__=='__main__':
     test2= ['stupid', 'garbage','love']
     test1_vocab = np.array(vectorize(vocabSet,test1))
     test2_vocab = np.array(vectorize(vocabSet,test2))
-    result1 = classify(test1_vocab,p0,p1)
-    result2 = classify(test2_vocab,p0,p1)
+    result1 = classify(test1_vocab,p0,p1,pA)
+    result2 = classify(test2_vocab,p0,p1,pA)
     print([result1, result2])
 
     #多项式朴素贝叶斯算法
