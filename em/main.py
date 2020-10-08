@@ -43,8 +43,13 @@ def gem():
 	#样本数据为 花萼长度、花萼宽度、花瓣长度、花瓣宽度
 	#target为 0: Iris setosa（山鸢尾），1: Iris virginica（北美鸢尾），2: Iris versicolor（变色鸢尾）
 	iris = datasets.load_iris()
+	print(len(iris.data))
+	#有放回的抽样,n_splits抽出的几组数据
 	skf = StratifiedKFold(n_splits=4)
+	print(list(skf.split(iris.data, iris.target)))
+	#取出索引
 	train_index,test_index = next(iter(skf.split(iris.data, iris.target)))
+	print(train_index)
 
 	X_train = iris.data[train_index]
 	y_train = iris.target[train_index]

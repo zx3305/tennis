@@ -96,7 +96,7 @@ def selfGradient():
 	# print(data.head())
 
 if __name__ == '__main__':
-	selfGradient()
+	reg()
 
 
 
