@@ -1,2 +1,3 @@
 .idea/
 .DS_Store
+./tensorflow1.5/MNIST_data/
