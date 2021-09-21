@@ -39,7 +39,9 @@ def load_graph2():
     with tf.Session() as sess:
         #恢复图结构和数据
         saver.restore(sess, ckpt.model_checkpoint_path)
-        tf.summary.FileWriter("./tensorboard", tf.get_default_graph())
+        print(tf.get_default_graph().get_operations())
+        # tf.summary.FileWriter("./tensorboard", tf.get_default_graph())
+
         #sess.run(tf.get_default_graph().get_tensor_by_name()) 取的tensor做运算
 
 
